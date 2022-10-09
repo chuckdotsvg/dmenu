@@ -2,7 +2,7 @@
 /* Default settings; can be overriden by command line. */
 
 static int topbar = 1;                      /* -b  option; if 0, dmenu appears at bottom */
-static int opacity = 1;                     /* -o  option; if 0, then alpha is disabled */
+static int opacity = 0;                     /* -o  option; if 0, then alpha is disabled */
 static int fuzzy = 0;                       /* -F  option; if 0, dmenu doesn't use fuzzy matching */
 static int center = 0;                      /* -c  option; if 0, dmenu won't be centered on the screen */
 static int min_width = 500;                 /* minimum width when centered */

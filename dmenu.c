@@ -750,6 +750,9 @@ run(void)
 		if (XFilterEvent(&ev, win))
 			continue;
 		switch(ev.type) {
+		case ButtonPress:
+			buttonpress(&ev);
+			break;
 		case DestroyNotify:
 			if (ev.xdestroywindow.window != win)
 				break;
@@ -866,6 +869,7 @@ setup(void)
 	swa.background_pixel = 0;
 	swa.colormap = cmap;
 	swa.event_mask = ExposureMask | KeyPressMask | VisibilityChangeMask
+		| ButtonPressMask
 	;
 	win = XCreateWindow(
 		dpy, parentwin,
@@ -903,7 +907,7 @@ setup(void)
 static void
 usage(void)
 {
-	fputs("usage: dmenu [-bv"
+	die("usage: dmenu [-bv"
 		"c"
 		"f"
 		"s"
@@ -919,8 +923,7 @@ usage(void)
 		" [-o opacity]"
 		" [-bw width]"
 		"\n             [-nhb color] [-nhf color] [-shb color] [-shf color]" // highlight colors
-		"\n", stderr);
-	exit(1);
+		"\n");
 }
 
 int
