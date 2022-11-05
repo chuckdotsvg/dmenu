@@ -60,13 +60,15 @@ buttonpress(XEvent *e)
 		for (item = curr; item != next; item = item->right) {
 			y += h;
 			if (ev->y >= y && ev->y <= (y + h)) {
-				puts(item->text);
 				if (!(ev->state & ControlMask)) {
+					sel = item;
+					selsel();
+					printsel(ev->state);
 					exit(0);
 				}
 				sel = item;
 				if (sel) {
-					sel->out = 1;
+					selsel();
 					drawmenu();
 				}
 				return;
@@ -89,13 +91,15 @@ buttonpress(XEvent *e)
 			x += w;
 			w = MIN(TEXTW(item->text), mw - x - TEXTW(">"));
 			if (ev->x >= x && ev->x <= x + w) {
-				puts(item->text);
 				if (!(ev->state & ControlMask)) {
+					sel = item;
+					selsel();
+					printsel(ev->state);
 					exit(0);
 				}
 				sel = item;
 				if (sel) {
-					sel->out = 1;
+					selsel();
 					drawmenu();
 				}
 				return;

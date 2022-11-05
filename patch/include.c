@@ -1,5 +1,8 @@
 #include "center.c"
 #include "fuzzyhighlight.c"
 #include "fuzzymatch.c"
+#include "highpriority.c"
+#include "multiselect.c"
 #include "mousesupport.c"
+#include "navhistory.c"
 #include "numbers.c"
