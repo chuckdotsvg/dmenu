@@ -3,4 +3,11 @@ export _JAVA_AWT_WM_NONREPARENTING=1
 # exec $(dmenu_path | dmenu "$@")
 
 # Uncomment for the NAVHISTORY patch (and remove the exec above)
-dmenu_path | dmenu -H "${XDG_CACHE_HOME:-$HOME/.cache/}/dmenu_run.hist" "$@" | ${SHELL:-"/bin/sh"} &
+# dmenu_path | dmenu -H "${XDG_CACHE_HOME:-$HOME/.cache/}/dmenu_run.hist" "$@" | ${SHELL:-"/bin/sh"} &
+dmenu_path | dmenu -H "${XDG_CACHE_HOME:-$HOME/.cache/}/dmenu_run.hist" "$@" | #${SHELL:-"/bin/sh"} &
+  while read -r cmd; do
+    #echo "$cmd" | xargs setsid -f & # TODO: make it simpler (just `setsid -f "$cmd"` doesn't work in all cases)
+  setsid gtk-launch $(ls /usr/share/applications | grep "$cmd" | head -1) || echo "$cmd" | xargs setsid -f & # TODO: make it simpler (just `setsid -f "$cmd"` doesn't work in all cases)
+  done
+
+# 
