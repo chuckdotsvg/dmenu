@@ -14,7 +14,7 @@ static const char *fonts[] = {
     "Noto Color Emoji:size=11",
     "monospace:size=10"
 };
-static const char *prompt      = "🔍 Search:";      /* -p  option; prompt to the left of input field */
+static char *prompt      = "🔍 Search:";      /* -p  option; prompt to the left of input field */
 
 #include "themes/tomorrow-night.h"
 

@@ -1,4 +1,4 @@
-# Custom build of dmenu
+# Custom build of dmenuv2
 
 The patches used in this build are:
 
@@ -10,6 +10,7 @@ The patches used in this build are:
 - FUZZYMATCH_PATCH
 - HIGHLIGHT_PATCH
 - HIGHPRIORITY_PATCH
+- MANAGED_PATCH
 - MOUSE_SUPPORT_PATCH
 - MULTI_SELECTION_PATCH
 - NAVHISTORY_PATCH

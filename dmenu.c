@@ -66,6 +66,7 @@ static struct item *items = NULL;
 static struct item *matches, *matchend;
 static struct item *prev, *curr, *next, *sel;
 static int mon = -1, screen;
+static int managed = 0;
 static int *selid = NULL;
 static unsigned int selidsize = 0;
 static unsigned int sortmatches = 1;
@@ -300,7 +301,6 @@ grabfocus(void)
 		XGetInputFocus(dpy, &focuswin, &revertwin);
 		if (focuswin == win)
 			return;
-		XSetInputFocus(dpy, win, RevertToParent, CurrentTime);
 		nanosleep(&ts, NULL);
 	}
 	die("cannot grab focus");
@@ -312,7 +312,7 @@ grabkeyboard(void)
 	struct timespec ts = { .tv_sec = 0, .tv_nsec = 1000000  };
 	int i;
 
-	if (embed)
+	if (embed || managed)
 		return;
 	/* try to grab keyboard, we may have to wait for another process to ungrab */
 	for (i = 0; i < 1000; i++) {
@@ -863,7 +863,7 @@ setup(void)
 	match();
 
 	/* create menu window */
-	swa.override_redirect = True;
+	swa.override_redirect = managed ? False : True;
 	swa.background_pixel = scheme[SchemeNorm][ColBg].pixel;
 	swa.event_mask = ExposureMask | KeyPressMask | VisibilityChangeMask
 		| ButtonPressMask
@@ -886,6 +886,14 @@ setup(void)
 	xic = XCreateIC(xim, XNInputStyle, XIMPreeditNothing | XIMStatusNothing,
 	                XNClientWindow, win, XNFocusWindow, win, NULL);
 
+	if (managed) {
+		XTextProperty prop;
+		char *windowtitle = prompt != NULL ? prompt : "dmenu";
+		Xutf8TextListToTextProperty(dpy, &windowtitle, 1, XUTF8StringStyle, &prop);
+		XSetWMName(dpy, win, &prop);
+		XSetTextProperty(dpy, win, &prop, XInternAtom(dpy, "_NET_WM_NAME", False));
+		XFree(prop.value);
+	}
 
 	XMapRaised(dpy, win);
 	if (embed) {
@@ -914,6 +922,7 @@ usage(void)
 		"S"
 		"R" // (changed from r to R due to conflict with INCREMENTAL_PATCH)
 		"] "
+		"[-wm] "
 		"[-l lines] [-p prompt] [-fn font] [-m monitor]"
 		"\n             [-nb color] [-nf color] [-sb color] [-sf color] [-w windowid]"
 		"\n            "
@@ -948,6 +957,8 @@ main(int argc, char *argv[])
 		} else if (!strcmp(argv[i], "-s")) { /* case-sensitive item matching */
 			fstrncmp = strncmp;
 			fstrstr = strstr;
+		} else if (!strcmp(argv[i], "-wm")) { /* display as managed wm window */
+			managed = 1;
 		} else if (!strcmp(argv[i], "-x")) { /* invert use_prefix */
 			use_prefix = !use_prefix;
 		} else if (!strcmp(argv[i], "-F")) { /* disable/enable fuzzy matching, depends on default */
